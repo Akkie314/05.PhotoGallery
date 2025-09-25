@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
         type: "x,y",
         inertia: true,
         bounds: ".photos-container",
-        edgeResistance: 0.65,
+        edgeResistance: 0.85,
 
         onDrag: function() {
             // 中心からの移動量を取得
