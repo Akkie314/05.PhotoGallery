@@ -4,18 +4,32 @@
     box-sizing: border-box;
 }
 
-/* カードの大きさを決める
- * 横が長い -> カードを33vh
- * 縦が長い -> カードを33vw
- */
-@media screen and (orientation: landscape) {
+:root {
+    --photo-card-size: calc(100vh / 3); /* デフォルト値 */
+}
+
+/* スマホ用（480px以下） */
+@media screen and (max-width: 480px) {
     :root {
-        --photo-card-size : calc(100vh / 3);
+        --photo-card-size: calc(100vw * 2 / 3);
+    }
+    
+    div.photos-container {
+        width: 90%;
     }
 }
-@media screen and (orientation: portrait) {
+
+/* PC・タブレット用（481px以上） - 横向き */
+@media screen and (min-width: 481px) and (orientation: landscape) {
     :root {
-        --photo-card-size : calc(100vw / 3);
+        --photo-card-size: calc(100vh / 3);
+    }
+}
+
+/* PC・タブレット用（481px以上） - 縦向き */
+@media screen and (min-width: 481px) and (orientation: portrait) {
+    :root {
+        --photo-card-size: calc(100vw / 3);
     }
 }
 
@@ -40,6 +54,7 @@ div.photos-container {
     justify-content: center;
     align-items: center;
 }
+
 
 div.photo-card-wrapper {
     position: absolute;
