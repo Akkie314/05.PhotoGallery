@@ -1,54 +1,58 @@
 document.addEventListener("DOMContentLoaded", (event) => {
-    const maxRotation = 85; // カードの最大回転角度
+    const SENSITIVITY = 0.25; // カード回転の感度
 
     const outOfBoundsThreshold = 50; // カードを捲ると判定する位置パーセント
 
     gsap.registerPlugin(Draggable)
 
     // カードをドラッグ可能にする
-    Draggable.create(".photo-card", {
+    Draggable.create(".photo-card-wrapper", {
         type: "x,y",
         inertia: true,
-        bounds: ".photo-container",
+        bounds: ".photos-container",
         edgeResistance: 0.65,
 
-        onMove: function() {
-            const xPercent = (this.x / this.maxX) * 100;
-            const yPercent = (this.y / this.maxY) * 100;
+        onDrag: function() {
+            // 中心からの移動量を取得
+
+            const card = this.target.querySelector('.photo-card');
 
             // カードを回転させる
-            rotateCard(this.target, xPercent, yPercent);
+            rotateCard(card, this.x, this.y);
         },
         onRelease: function() {
             const xPercent = (this.x / this.maxX) * 100;
             const yPercent = (this.y / this.maxY) * 100;
 
+            const card = this.target.querySelector('.photo-card');
+
             // 画面外に出たら
             if (isOutOfBounds(xPercent, yPercent)) {
                 alert("Card flipped!");
             }
-            resetCard();
+
+            // カードを元の位置に戻す
+            resetCard(card);
+            // ラッパーも元の位置に戻す
+            resetCard(this.target);
         }
     });
 
-    function rotateCard(card, xPercent, yPercent) {
-        // カードの回転角度を計算
-        let rotateX = -((yPercent - 50) / 100) * maxRotation;
-        let rotateY = ((xPercent - 50) / 100) * maxRotation;
+    function rotateCard(target, x, y) {
+        // 回転軸を計算
+        const axisX = -y;
+        const axisY = x;
 
-        // 回転角を制限する
-        rotateX = Math.max(-maxRotation, Math.min(maxRotation, rotateX));
-        rotateY = Math.max(-maxRotation, Math.min(maxRotation, rotateY));
-
-        console.log(rotateX, rotateY);
+        // 回転量を計算
+        const distance = Math.hypot(x, y);
+        const angle = distance * SENSITIVITY;
 
         // 前回のアニメーションをキャンセル
-        gsap.killTweensOf(card);
+        gsap.killTweensOf(target);
 
         // 回転アニメーションを適用
-        gsap.to(card, {
-            rotationX: rotateX,
-            rotationY: rotateY,
+        gsap.to(target, {
+            transform: `rotate3d(${axisX}, ${axisY}, 0, ${angle}deg)`,
             ease: "power1.out",
             duration: 0.05
         });
@@ -59,13 +63,12 @@ document.addEventListener("DOMContentLoaded", (event) => {
         return Math.abs(xPercent) > outOfBoundsThreshold || Math.abs(yPercent) > outOfBoundsThreshold;
     }
 
-    function resetCard() {
+    function resetCard(target) {
         // カードを元の位置に戻すアニメーション
-        gsap.to(".photo-card", {
+        gsap.to(target, {
             x: 0,
             y: 0,
-            rotationX: 0,
-            rotationY: 0,
+            transform: "rotate3d(0, 0, 0, 0deg)",
             ease: "power1.out",
             duration: 0.25
         });
