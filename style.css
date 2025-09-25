@@ -3,3 +3,62 @@
     padding: 0;
     box-sizing: border-box;
 }
+
+/* カードの大きさを決める
+ * 横が長い -> カードを33vh
+ * 縦が長い -> カードを33vw
+ */
+@media screen and (orientation: landscape) {
+    :root {
+        --photo-card-size : calc(100vh / 3);
+    }
+}
+@media screen and (orientation: portrait) {
+    :root {
+        --photo-card-size : calc(100vw / 3);
+    }
+}
+
+body {
+    width: 100dvw;
+    height: 100dvh;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    overflow: hidden;
+
+    background-color: #f3fcff;
+}
+
+div.photo-container {
+    width: 50%;
+    aspect-ratio: 1 / 1;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+div.photo-card {
+    width: var(--photo-card-size);
+    aspect-ratio: 1 / 1;
+
+    padding:1rem;
+
+    background-color: #fff;
+    box-shadow: 0px 0px 2px rgb(0 0 0 / 20%);
+}
+
+img.photo-card-image {
+    width: 100%;
+    height: auto;
+}
+
+div.photo-card-title {
+    margin-top: 0.5rem;
+    text-align: center;
+    font-size: 0.75rem;
+    color: #333;
+}
