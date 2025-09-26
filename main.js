@@ -1,12 +1,24 @@
 document.addEventListener("DOMContentLoaded", (event) => {
     const MAX_CARD_ANGLE =  60; // カードの最大回転角度
+
+    // カードの初期回転角度の範囲
     const CARD_DEFAULT_ANGLE_MAX = 20;
     const CARD_DEFAULT_ANGLE_MIN = -20;
+
+    // オーバーレイを消すまでの時間
+    const OVERLAY_DISAPPEAR_TIME = 3000;
 
     const outOfBoundsThreshold = 50; // カードを捲ると判定する位置パーセント
 
     const wrappers = document.querySelectorAll('.photo-card-wrapper');
 
+    // オーバーレイが消えたか
+    let isOverlayRemoved = false;
+
+    // 一定時間経過で、オーバーレイを消す
+    setTimeout(removeOverlay, OVERLAY_DISAPPEAR_TIME);
+
+    // 写真を配置する
     setPhotoCard();
 
     gsap.registerPlugin(Draggable)
@@ -20,6 +32,12 @@ document.addEventListener("DOMContentLoaded", (event) => {
         zIndexBoost: false,
 
         onDrag: function() {
+            // ドラッグしたらオーバーレイを消す
+            if (!isOverlayRemoved) {
+                removeOverlay();
+            }
+
+            // ドラッグ中の位置を取得
             const {x, y, maxX, maxY} = this;
 
             const progressX = maxX > 0 ? (x / maxX) : 0;
@@ -48,6 +66,13 @@ document.addEventListener("DOMContentLoaded", (event) => {
             resetPositionCard(this.target);
         }
     });
+
+    function removeOverlay() {
+        const overlay = document.querySelector('.swipe-hint-overlay');
+        overlay.style.opacity = 0;
+
+        isOverlayRemoved = true;
+    }
 
     function setPhotoCard() {
         let angle = 0;
@@ -94,7 +119,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
             x: 0,
             y: 0,
             ease: "power1.out",
-            duration: 0.25
+            duration: 0.3
         });
     }
 
@@ -103,7 +128,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
         gsap.to(target, {
             transform: "rotate3d(0, 0, 0, 0deg)",
             ease: "power1.out",
-            duration: 0.25
+            duration: 0.3
         });
     }
 
