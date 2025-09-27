@@ -7,7 +7,7 @@
 :root {
     --photo-card-size: calc(100vh / 3); /* デフォルト値 */
 
-    --text-color-black: #444;
+    --text-color-black: #555;
     --text-color-white: #ddd;
 }
 
@@ -52,6 +52,29 @@ body {
     font-optical-sizing: auto;
     font-weight: 500;
     font-style: normal;
+}
+
+header {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+
+    display: flex;
+    gap: 1rem;
+
+    z-index: 999;
+}
+
+a.link {
+    text-decoration: underline;
+    color: #7b8c99;
+
+    filter: brightness(1);
+    transition: filter 0.25s ease;
+}
+
+a.link:hover {
+    filter: brightness(1.5);
 }
 
 div.photos-container {
